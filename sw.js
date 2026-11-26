@@ -1,0 +1,4 @@
+const V="ab-v5",CORE=["./","index.html","assets/style.css","assets/style2.css","assets/data.js","assets/content.js","assets/content2.js","assets/config.js","assets/pages2.js","assets/app.js","assets/favicon-32.png","assets/logo-mark.png","assets/logo-full.png","assets/style2.css"];
+self.addEventListener("install",e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
+self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==V).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
+self.addEventListener("fetch",e=>{const r=e.request;if(r.method!=="GET"||new URL(r.url).origin!==location.origin)return;e.respondWith(fetch(r).then(res=>{const cp=res.clone();if(res.ok)caches.open(V).then(c=>c.put(r,cp));return res}).catch(()=>caches.match(r).then(m=>m||caches.match("index.html"))))});
